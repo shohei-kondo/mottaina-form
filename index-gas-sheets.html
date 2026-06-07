@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>「もったいない」発見シート | LINK & SYNC</title>
+    <meta name="description" content="日々の業務にある「もったいない」を整理し、相談日時調整へ進むための入力フォームです。">
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #18212f;
+        --muted: #647084;
+        --line: #d9e1ec;
+        --surface: #ffffff;
+        --soft: #f4f7fb;
+        --accent: #1f6f78;
+        --accent-dark: #154f56;
+        --warn: #9a5b00;
+        --error: #b3261e;
+        --ok: #146c43;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: #f7f9fc;
+        line-height: 1.7;
+      }
+      header {
+        background: #ffffff;
+        border-bottom: 1px solid var(--line);
+      }
+      .wrap {
+        width: min(1040px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 72px;
+        gap: 18px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+      .brand img {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+      }
+      .hero {
+        padding: 56px 0 44px;
+        background: linear-gradient(180deg, #ffffff 0%, #edf5f6 100%);
+      }
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
+        gap: 34px;
+        align-items: center;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3.6rem);
+        line-height: 1.15;
+        letter-spacing: 0;
+        overflow-wrap: anywhere;
+      }
+      .lead {
+        margin: 20px 0 0;
+        color: #39485c;
+        font-size: 1.08rem;
+        overflow-wrap: anywhere;
+      }
+      .hero-note {
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.86);
+      }
+      .hero-note ul {
+        margin: 12px 0 0;
+        padding-left: 20px;
+      }
+      main {
+        padding: 42px 0 64px;
+      }
+      .sheet {
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+        box-shadow: 0 16px 36px rgba(32, 50, 75, 0.08);
+      }
+      .sheet-head {
+        padding: 28px 32px;
+        background: #fbfdff;
+        border-bottom: 1px solid var(--line);
+      }
+      .sheet-head h2,
+      .form-section h3 {
+        margin: 0;
+        letter-spacing: 0;
+      }
+      .sheet-head p,
+      .help {
+        color: var(--muted);
+      }
+      .form-section {
+        padding: 30px 32px;
+        border-bottom: 1px solid var(--line);
+      }
+      .field,
+      fieldset {
+        margin: 20px 0 0;
+        padding: 0;
+        border: 0;
+      }
+      label,
+      legend,
+      .scale-title {
+        display: block;
+        font-weight: 700;
+      }
+      input[type="text"],
+      input[type="email"],
+      textarea {
+        width: 100%;
+        min-height: 48px;
+        margin-top: 8px;
+        padding: 11px 13px;
+        border: 1px solid #bac7d8;
+        border-radius: 6px;
+        font: inherit;
+        color: var(--ink);
+        background: #fff;
+      }
+      textarea {
+        min-height: 126px;
+        resize: vertical;
+      }
+      input:focus,
+      textarea:focus {
+        outline: 3px solid rgba(31, 111, 120, 0.18);
+        border-color: var(--accent);
+      }
+      .required,
+      .optional {
+        display: inline-block;
+        margin-left: 6px;
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+      .required { color: var(--error); }
+      .optional { color: var(--muted); }
+      .choice-grid,
+      .check-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .choice {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        min-height: 48px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: #fff;
+        font-weight: 600;
+      }
+      .choice input {
+        flex: 0 0 auto;
+        margin-top: 5px;
+      }
+      .scale-list {
+        display: grid;
+        gap: 14px;
+        margin-top: 18px;
+      }
+      .scale-row {
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfdff;
+      }
+      .scale {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .submit-area {
+        padding: 30px 32px 36px;
+        background: #fbfdff;
+      }
+      button[type="submit"],
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 54px;
+        padding: 0 24px;
+        border: 0;
+        border-radius: 6px;
+        color: #fff;
+        background: var(--accent);
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      button[type="submit"]:hover,
+      .button:hover {
+        background: var(--accent-dark);
+      }
+      button[disabled] {
+        cursor: wait;
+        opacity: 0.72;
+      }
+      .status {
+        display: none;
+        margin-top: 18px;
+        padding: 16px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+      .status.is-visible { display: block; }
+      .status.error {
+        border-color: rgba(179, 38, 30, 0.45);
+        color: var(--error);
+      }
+      .status.success {
+        border-color: rgba(20, 108, 67, 0.45);
+        color: var(--ok);
+      }
+      .config-warning {
+        margin: 0 0 18px;
+        padding: 14px 16px;
+        border: 1px solid rgba(154, 91, 0, 0.35);
+        border-radius: 6px;
+        color: var(--warn);
+        background: #fff8ea;
+      }
+      .footer {
+        padding: 26px 0;
+        color: var(--muted);
+        text-align: center;
+      }
+      @media (max-width: 760px) {
+        .hero-grid,
+        .choice-grid,
+        .check-grid,
+        .scale {
+          grid-template-columns: 1fr;
+        }
+        .hero {
+          padding-top: 34px;
+        }
+        h1 {
+          font-size: 1.85rem;
+          line-height: 1.25;
+        }
+        .sheet-head,
+        .form-section,
+        .submit-area {
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap nav">
+        <div class="brand">
+          <img src="logo_image_20251203.png" alt="LINK & SYNC">
+          <span>LINK & SYNC</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <h1>「もったいない」を見つける<br>相談シート</h1>
+          <p class="lead">毎日の仕事の中で、時間・確認・手戻りが増えているところを整理します。入力後、相談日時の調整へ進めます。</p>
+        </div>
+        <div class="hero-note">
+          <strong>よくある「もったいない」</strong>
+          <ul>
+            <li>同じ情報を何度も入力している</li>
+            <li>最新版の資料や見積を探す時間が多い</li>
+            <li>社長や特定の人に確認が集中している</li>
+            <li>請求・入金・申込の抜け漏れが不安</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <div class="wrap">
+        <section class="sheet" aria-labelledby="sheet-title">
+          <div class="sheet-head">
+            <h2 id="sheet-title">入力フォーム</h2>
+            <p>分かる範囲で大丈夫です。内容をもとに、初回相談で優先順位を一緒に整理します。</p>
+          </div>
+
+          <form id="mottainai-form" novalidate>
+            <section class="form-section">
+              <h3>会社・ご連絡先</h3>
+              <div class="field">
+                <label for="company">会社名 <span class="required">必須</span></label>
+                <input id="company" data-field="company" type="text" autocomplete="organization" required>
+              </div>
+              <div class="field">
+                <label for="name">お名前 <span class="required">必須</span></label>
+                <input id="name" data-field="name" type="text" autocomplete="name" required>
+              </div>
+              <div class="field">
+                <label for="email">メールアドレス <span class="required">必須</span></label>
+                <input id="email" data-field="email" type="email" autocomplete="email" required>
+              </div>
+              <div class="field">
+                <label for="address">会社住所 <span class="optional">任意</span></label>
+                <input id="address" data-field="address" type="text" autocomplete="street-address">
+              </div>
+              <fieldset>
+                <legend>従業員数 <span class="required">必須</span></legend>
+                <div class="choice-grid">
+                  <label class="choice"><input type="radio" data-field="employeeCount" name="employeeCount" value="1名（代表者のみ・個人事業主含む）" required><span>1名（代表者のみ・個人事業主含む）</span></label>
+                  <label class="choice"><input type="radio" data-field="employeeCount" name="employeeCount" value="2〜5名"><span>2〜5名</span></label>
+                  <label class="choice"><input type="radio" data-field="employeeCount" name="employeeCount" value="6〜10名"><span>6〜10名</span></label>
+                  <label class="choice"><input type="radio" data-field="employeeCount" name="employeeCount" value="11〜30名"><span>11〜30名</span></label>
+                  <label class="choice"><input type="radio" data-field="employeeCount" name="employeeCount" value="31名以上"><span>31名以上</span></label>
+                  <label class="choice"><input type="radio" data-field="employeeCount" name="employeeCount" value="回答しない"><span>回答しない</span></label>
+                </div>
+              </fieldset>
+            </section>
+
+            <section class="form-section">
+              <h3>本当は時間を使いたいこと</h3>
+              <p class="help">複数選択できます。</p>
+              <div class="check-grid">
+                <label class="choice"><input type="checkbox" data-field="focusAreas" value="新規営業・新規開拓"><span>新規営業・新規開拓</span></label>
+                <label class="choice"><input type="checkbox" data-field="focusAreas" value="既存顧客フォロー"><span>既存顧客フォロー</span></label>
+                <label class="choice"><input type="checkbox" data-field="focusAreas" value="採用・教育"><span>採用・教育</span></label>
+                <label class="choice"><input type="checkbox" data-field="focusAreas" value="現場や品質の強化"><span>現場や品質の強化</span></label>
+                <label class="choice"><input type="checkbox" data-field="focusAreas" value="新サービスづくり"><span>新サービスづくり</span></label>
+                <label class="choice"><input type="checkbox" data-field="focusAreas" value="家族との時間"><span>家族との時間</span></label>
+              </div>
+            </section>
+
+            <section class="form-section">
+              <h3>時間が取られている業務</h3>
+              <div class="scale-list" id="scale-list"></div>
+            </section>
+
+            <section class="form-section">
+              <h3>気になること</h3>
+              <div class="check-grid">
+                <label class="choice"><input type="checkbox" data-field="issueSignals" value="同じ内容を何度も入力している"><span>同じ内容を何度も入力している</span></label>
+                <label class="choice"><input type="checkbox" data-field="issueSignals" value="過去の情報を探すことが多い"><span>過去の情報を探すことが多い</span></label>
+                <label class="choice"><input type="checkbox" data-field="issueSignals" value="特定の人しか分からない業務がある"><span>特定の人しか分からない業務がある</span></label>
+                <label class="choice"><input type="checkbox" data-field="issueSignals" value="書類の抜け漏れや出し忘れが起きる"><span>書類の抜け漏れや出し忘れが起きる</span></label>
+                <label class="choice"><input type="checkbox" data-field="issueSignals" value="外出先では事務作業がしづらい"><span>外出先では事務作業がしづらい</span></label>
+                <label class="choice"><input type="checkbox" data-field="issueSignals" value="今のやり方では案件を増やせない"><span>今のやり方では案件を増やせない</span></label>
+              </div>
+              <div class="field">
+                <label for="freeText">具体的に気になること <span class="optional">任意</span></label>
+                <textarea id="freeText" data-field="freeText" placeholder="例：見積の最新版が分からなくなる、外出先で事務作業が進まない、請求漏れが不安 など"></textarea>
+              </div>
+            </section>
+
+            <div class="submit-area">
+              <p class="config-warning" id="config-warning" hidden>公開前に `GAS_WEB_APP_URL` をApps Script Web AppのURLへ差し替えてください。</p>
+              <button type="submit" id="submit-button">送信して日程調整へ進む</button>
+              <div class="status" id="status" aria-live="polite"></div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap">LINK & SYNC</div>
+    </footer>
+
+    <script>
+      const GAS_WEB_APP_URL = "PASTE_APPS_SCRIPT_WEB_APP_URL_HERE";
+      const SPIR_URL = "https://app.spirinc.com/t/RP5JoChQjAt3Yl4uq5xz6/as/HEjj6RGZiSaz8ngzB_0Kn/confirm";
+
+      const workloadItems = [
+        ["inquiry", "問い合わせ対応"],
+        ["estimate", "見積作成・修正"],
+        ["contract", "契約・申込の手続き"],
+        ["project", "案件進行・タスク管理"],
+        ["invoice", "請求書・書類作成"],
+        ["payment", "入金確認・支払い管理"],
+        ["handover", "社内共有・引き継ぎ"],
+      ];
+      const scaleValues = ["該当なし", "少ない", "時々ある", "多い"];
+
+      const scaleList = document.getElementById("scale-list");
+      workloadItems.forEach(([key, label]) => {
+        const row = document.createElement("div");
+        row.className = "scale-row";
+        row.innerHTML = `
+          <span class="scale-title">${label}</span>
+          <div class="scale">
+            ${scaleValues.map(value => `
+              <label class="choice">
+                <input type="radio" data-field="workload.${key}" name="workload.${key}" value="${value}">
+                <span>${value}</span>
+              </label>
+            `).join("")}
+          </div>
+        `;
+        scaleList.appendChild(row);
+      });
+
+      const form = document.getElementById("mottainai-form");
+      const status = document.getElementById("status");
+      const submitButton = document.getElementById("submit-button");
+      const configWarning = document.getElementById("config-warning");
+
+      if (!GAS_WEB_APP_URL.includes("PASTE_")) {
+        configWarning.style.display = "none";
+      }
+
+      function setStatus(type, html) {
+        status.className = `status is-visible ${type}`;
+        status.innerHTML = html;
+      }
+
+      function getSingle(field) {
+        const element = form.querySelector(`[data-field="${field}"]`);
+        return element ? element.value.trim() : "";
+      }
+
+      function getRadio(field) {
+        const checked = form.querySelector(`[data-field="${field}"]:checked`);
+        return checked ? checked.value : "";
+      }
+
+      function getChecked(field) {
+        return Array.from(form.querySelectorAll(`[data-field="${field}"]:checked`)).map(item => item.value);
+      }
+
+      function getWorkload() {
+        return Object.fromEntries(workloadItems.map(([key]) => [key, getRadio(`workload.${key}`)]));
+      }
+
+      function validatePayload(payload) {
+        const errors = [];
+        if (!payload.company) errors.push("会社名を入力してください。");
+        if (!payload.name) errors.push("お名前を入力してください。");
+        if (!payload.email) errors.push("メールアドレスを入力してください。");
+        if (payload.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) errors.push("メールアドレスの形式を確認してください。");
+        if (!payload.employeeCount) errors.push("従業員数を選択してください。");
+        return errors;
+      }
+
+      function buildPayload() {
+        return {
+          submittedAt: new Date().toISOString(),
+          source: "mottainai-gas-sheets-page",
+          company: getSingle("company"),
+          name: getSingle("name"),
+          email: getSingle("email"),
+          address: getSingle("address"),
+          employeeCount: getRadio("employeeCount"),
+          focusAreas: getChecked("focusAreas"),
+          workload: getWorkload(),
+          issueSignals: getChecked("issueSignals"),
+          freeText: getSingle("freeText"),
+          monitoring: false,
+        };
+      }
+
+      form.addEventListener("submit", async event => {
+        event.preventDefault();
+        const payload = buildPayload();
+        const errors = validatePayload(payload);
+
+        if (GAS_WEB_APP_URL.includes("PASTE_")) {
+          setStatus("error", "公開前設定が未完了です。GAS_WEB_APP_URLをApps Script Web AppのURLへ差し替えてください。");
+          return;
+        }
+
+        if (errors.length) {
+          setStatus("error", errors.join("<br>"));
+          return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = "送信中...";
+        setStatus("", "送信しています。画面を閉じずにお待ちください。");
+
+        try {
+          const response = await fetch(GAS_WEB_APP_URL, {
+            method: "POST",
+            headers: {
+              'Content-Type': 'text/plain;charset=utf-8',
+            },
+            body: JSON.stringify(payload),
+          });
+          const result = await response.json();
+          if (!response.ok || !result.ok) {
+            throw new Error(result.error || "送信に失敗しました。");
+          }
+          setStatus("success", `送信が完了しました。<br><a class="button" href="${SPIR_URL}" target="_blank" rel="noopener">相談日時を調整する</a>`);
+          form.reset();
+        } catch (error) {
+          setStatus("error", `送信できませんでした。時間をおいて再度お試しください。<br>${error.message}`);
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = "送信して日程調整へ進む";
+        }
+      });
+    </script>
+  </body>
+</html>
