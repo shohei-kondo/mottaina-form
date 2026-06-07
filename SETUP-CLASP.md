@@ -2,7 +2,35 @@
 
 The local files are ready for Apps Script upload.
 
-## Current blocker
+## Current Google setup
+
+Created Apps Script project:
+
+```text
+https://script.google.com/d/1f5dhqwNMELFqfDlY4ZwrnPWPSAylXaTpuuF6lJUGf1r7ZnsxihNgbcSz/edit
+```
+
+Pushed files:
+
+- `Code.gs`
+- `appsscript.json`
+
+Created deployment:
+
+```text
+Deployment ID: AKfycbz39etfFM7PsYqEF9p6VxW6mDnwVebFqJ_sApOJX40TrfTi8-1nKQoIFeoYjFDM6kXqww
+Web App URL: https://script.google.com/macros/s/AKfycbz39etfFM7PsYqEF9p6VxW6mDnwVebFqJ_sApOJX40TrfTi8-1nKQoIFeoYjFDM6kXqww/exec
+```
+
+Current public-health result:
+
+```text
+HTTP 403 access denied
+```
+
+The remaining step is to open the Apps Script deployment UI and confirm the Web App deployment access is public enough for anonymous form users.
+
+## Previous blocker
 
 `clasp list` currently returns:
 
@@ -10,11 +38,11 @@ The local files are ready for Apps Script upload.
 invalid_grant / invalid_rapt
 ```
 
-This means Google requires browser reauthentication before Codex can create or update Apps Script projects.
+This meant Google required browser reauthentication before Codex could create or update Apps Script projects. Reauthentication is now complete.
 
 ## After reauthentication
 
-Run from this folder:
+Run from this folder if rebuilding the Google project from scratch:
 
 ```powershell
 clasp create --type webapp --title "mottaina-form-gas-sheets"

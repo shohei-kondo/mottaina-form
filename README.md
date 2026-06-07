@@ -11,6 +11,7 @@ Standalone public pages for the mottainai discovery sheet.
 - `appsscript.json`: Apps Script manifest for the Web App
 - `README-gas-sheets.md`: setup notes for the GAS + Google Sheets implementation
 - `SETUP-CLASP.md`: clasp setup notes for creating the Apps Script project
+- `.claspignore`: limits Apps Script upload to `Code.gs` and `appsscript.json`
 
 ## GitHub Pages
 
