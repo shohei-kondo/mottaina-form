@@ -25,10 +25,12 @@ Web App URL: https://script.google.com/macros/s/AKfycbz39etfFM7PsYqEF9p6VxW6mDnw
 Current public-health result:
 
 ```text
-HTTP 403 access denied
+HTTP 200
+spreadsheetConfigured: true
+monitoring POST: ok true
 ```
 
-The remaining step is to open the Apps Script deployment UI and confirm the Web App deployment access is public enough for anonymous form users.
+The Web App is publicly reachable and the monitoring write path works.
 
 ## Previous blocker
 
