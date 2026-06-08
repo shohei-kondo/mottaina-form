@@ -17,6 +17,16 @@ const RESPONSE_HEADERS = [
   'userAgent',
 ];
 
+const WORKLOAD_LABELS = {
+  inquiry: '問い合わせ対応',
+  estimate: '見積作成・修正',
+  contract: '契約・申込の手続き',
+  project: '案件進行・タスク管理',
+  invoice: '請求書・書類作成',
+  payment: '入金確認・支払い管理',
+  handover: '社内共有・引き継ぎ',
+};
+
 function doGet(e) {
   return handleHealthCheck_(e);
 }
@@ -62,8 +72,7 @@ function parsePayload_(e) {
     throw new Error('Empty request body.');
   }
 
-  const raw = e.postData.contents;
-  const parsed = JSON.parse(raw);
+  const parsed = JSON.parse(e.postData.contents);
   return parsed && typeof parsed === 'object' ? parsed : {};
 }
 
@@ -73,9 +82,9 @@ function validatePayload_(payload) {
   }
 
   const required = [
+    ['email', 'メールアドレス'],
     ['company', '会社名'],
     ['name', 'お名前'],
-    ['email', 'メールアドレス'],
     ['employeeCount', '従業員数'],
   ];
 
@@ -137,13 +146,6 @@ function toRow_(payload) {
   ];
 }
 
-function normalizeList_(value) {
-  if (Array.isArray(value)) {
-    return value.join(', ');
-  }
-  return String(value || '');
-}
-
 function sendNotifications_(payload) {
   if (payload.monitoring) {
     return;
@@ -161,7 +163,7 @@ function sendNotifications_(payload) {
     });
   }
 
-  if (payload.email && props.getProperty('SEND_USER_COPY') === 'true') {
+  if (payload.email && props.getProperty('SEND_USER_COPY') !== 'false') {
     MailApp.sendEmail({
       to: payload.email,
       subject: '「もったいない」発見シートを受け付けました',
@@ -174,15 +176,10 @@ function buildOwnerBody_(payload, spirUrl) {
   return [
     '新しい回答を受け付けました。',
     '',
-    `会社名: ${payload.company || ''}`,
-    `お名前: ${payload.name || ''}`,
-    `メール: ${payload.email || ''}`,
-    `従業員数: ${payload.employeeCount || ''}`,
-    `本当は時間を使いたいこと: ${normalizeList_(payload.focusAreas)}`,
-    `気になること: ${normalizeList_(payload.issueSignals)}`,
-    `自由記入: ${payload.freeText || ''}`,
+    buildResponseSummary_(payload),
     '',
-    `Spir URL: ${spirUrl}`,
+    '日程調整URL:',
+    spirUrl,
   ].join('\n');
 }
 
@@ -190,18 +187,52 @@ function buildUserBody_(payload, spirUrl) {
   return [
     `${payload.name || ''} 様`,
     '',
-    '「もったいない」発見シートへのご入力ありがとうございます。',
-    '以下のURLから相談日時をご調整ください。',
+    '「もったいない」発見シートへのご回答ありがとうございます。',
+    'ご入力内容のコピーを下記にお送りします。',
+    '',
+    '次は、以下のURLから相談日時をご調整ください。',
+    '開いた画面で候補時間を1つ選び、内容を確認して確定すると予約が完了します。',
     '',
     spirUrl,
+    '',
+    '--- ご回答内容のコピー ---',
+    buildResponseSummary_(payload),
     '',
     'LINK & SYNC',
   ].join('\n');
 }
 
+function buildResponseSummary_(payload) {
+  return [
+    `会社名: ${payload.company || ''}`,
+    `お名前: ${payload.name || ''}`,
+    `メールアドレス: ${payload.email || ''}`,
+    `会社住所: ${payload.address || ''}`,
+    `従業員数: ${payload.employeeCount || ''}`,
+    `本当は時間を使いたいこと: ${normalizeList_(payload.focusAreas)}`,
+    '時間を取られている業務:',
+    formatWorkload_(payload.workload),
+    `気になること: ${normalizeList_(payload.issueSignals)}`,
+    `自由記入: ${payload.freeText || ''}`,
+  ].join('\n');
+}
+
+function formatWorkload_(workload) {
+  const source = workload || {};
+  return Object.keys(WORKLOAD_LABELS).map(function(key) {
+    return `- ${WORKLOAD_LABELS[key]}: ${source[key] || '未回答'}`;
+  }).join('\n');
+}
+
+function normalizeList_(value) {
+  if (Array.isArray(value)) {
+    return value.join(', ');
+  }
+  return String(value || '');
+}
+
 function jsonResponse_(body, statusCode) {
-  const output = ContentService
+  return ContentService
     .createTextOutput(JSON.stringify(Object.assign({ statusCode }, body)))
     .setMimeType(ContentService.MimeType.JSON);
-  return output;
 }

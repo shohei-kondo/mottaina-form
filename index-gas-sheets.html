@@ -8,116 +8,216 @@
     <style>
       :root {
         color-scheme: light;
-        --ink: #18212f;
-        --muted: #647084;
-        --line: #d9e1ec;
+        --navy: #0f385f;
+        --ink: #071832;
+        --muted: #4c5d73;
+        --line: #d9e4ef;
+        --soft: #edf5fb;
         --surface: #ffffff;
-        --soft: #f4f7fb;
-        --accent: #1f6f78;
-        --accent-dark: #154f56;
-        --warn: #9a5b00;
+        --accent: #0076b6;
+        --accent-2: #2eb7e8;
         --error: #b3261e;
-        --ok: #146c43;
+        --ok: #006b4f;
       }
       * { box-sizing: border-box; }
+      html {
+        width: 100%;
+        overflow-x: hidden;
+      }
       body {
         margin: 0;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
         color: var(--ink);
-        background: #f7f9fc;
-        line-height: 1.7;
+        background: linear-gradient(180deg, #eef5fa 0%, #f8fbfe 42%, #ffffff 100%);
+        line-height: 1.8;
+        overflow-x: hidden;
       }
       header {
-        background: #ffffff;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: rgba(248, 251, 254, 0.94);
         border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(10px);
       }
       .wrap {
-        width: min(1040px, calc(100% - 32px));
+        width: min(980px, calc(100% - 32px));
         margin: 0 auto;
+        max-width: 100%;
       }
       .nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        min-height: 72px;
+        min-height: 70px;
         gap: 18px;
       }
       .brand {
         display: flex;
         align-items: center;
         gap: 12px;
-        font-weight: 700;
-        letter-spacing: 0;
+        color: var(--navy);
+        font-weight: 800;
       }
       .brand img {
-        width: 42px;
-        height: 42px;
+        width: 108px;
+        height: 34px;
         object-fit: contain;
+        background: #fff;
+      }
+      .nav-link {
+        display: inline-flex;
+        min-height: 42px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 22px;
+        border-radius: 999px;
+        color: #fff;
+        background: var(--navy);
+        text-decoration: none;
+        font-weight: 800;
       }
       .hero {
-        padding: 56px 0 44px;
-        background: linear-gradient(180deg, #ffffff 0%, #edf5f6 100%);
+        padding: 56px 0 38px;
+        width: 100%;
+        max-width: 100vw;
       }
-      .hero-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
-        gap: 34px;
+      .eyebrow {
+        display: inline-flex;
         align-items: center;
+        gap: 10px;
+        margin: 0 0 22px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        color: var(--navy);
+        background: #e9f5fd;
+        font-size: 0.86rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+      }
+      .eyebrow::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--accent-2);
       }
       h1 {
         margin: 0;
-        font-size: clamp(2rem, 5vw, 3.6rem);
-        line-height: 1.15;
+        max-width: min(760px, 100%);
+        font-size: clamp(2.05rem, 5vw, 3.85rem);
+        line-height: 1.2;
         letter-spacing: 0;
         overflow-wrap: anywhere;
+        word-break: break-all;
+      }
+      .mark {
+        background: linear-gradient(transparent 58%, rgba(46, 183, 232, 0.38) 58%);
       }
       .lead {
-        margin: 20px 0 0;
-        color: #39485c;
+        max-width: min(760px, 100%);
+        margin: 24px 0 0;
+        color: #263c58;
         font-size: 1.08rem;
         overflow-wrap: anywhere;
+        word-break: break-all;
       }
-      .hero-note {
-        padding: 22px;
+      .steps {
+        display: grid;
+        gap: 13px;
+        max-width: min(760px, 100%);
+        margin: 28px 0 0;
+      }
+      .step {
+        display: grid;
+        grid-template-columns: 32px minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+        overflow-wrap: anywhere;
+        word-break: break-all;
+      }
+      .num {
+        display: inline-grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border-radius: 50%;
+        color: #fff;
+        background: var(--navy);
+        font-weight: 800;
+      }
+      .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 28px;
+      }
+      .badge {
+        padding: 9px 16px;
         border: 1px solid var(--line);
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.86);
-      }
-      .hero-note ul {
-        margin: 12px 0 0;
-        padding-left: 20px;
-      }
-      main {
-        padding: 42px 0 64px;
+        border-radius: 999px;
+        background: #fff;
+        color: var(--navy);
+        box-shadow: 0 4px 12px rgba(15, 56, 95, 0.08);
+        font-weight: 800;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-all;
       }
       .sheet {
         overflow: hidden;
+        margin: 24px auto 72px;
         border: 1px solid var(--line);
-        border-radius: 8px;
+        border-radius: 18px;
         background: var(--surface);
-        box-shadow: 0 16px 36px rgba(32, 50, 75, 0.08);
+        box-shadow: 0 22px 48px rgba(15, 56, 95, 0.12);
+      }
+      main {
+        width: 100%;
+        max-width: 100vw;
+        overflow: hidden;
       }
       .sheet-head {
-        padding: 28px 32px;
+        padding: 34px 36px 26px;
         background: #fbfdff;
-        border-bottom: 1px solid var(--line);
+      }
+      .sheet-kicker {
+        margin: 0 0 10px;
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.2em;
       }
       .sheet-head h2,
       .form-section h3 {
         margin: 0;
-        letter-spacing: 0;
+        line-height: 1.35;
       }
       .sheet-head p,
       .help {
         color: var(--muted);
       }
+      .bar {
+        height: 7px;
+        margin-top: 22px;
+        border-radius: 999px;
+        background: #eaf2f8;
+      }
       .form-section {
-        padding: 30px 32px;
-        border-bottom: 1px solid var(--line);
+        padding: 32px 36px;
+        border-top: 1px solid var(--line);
+      }
+      .section-title {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+      }
+      .section-title .num {
+        border-radius: 9px;
       }
       .field,
       fieldset {
-        margin: 20px 0 0;
+        margin: 22px 0 0;
         padding: 0;
         border: 0;
       }
@@ -125,39 +225,41 @@
       legend,
       .scale-title {
         display: block;
-        font-weight: 700;
+        font-weight: 800;
       }
       input[type="text"],
       input[type="email"],
       textarea {
         width: 100%;
-        min-height: 48px;
+        min-height: 54px;
         margin-top: 8px;
-        padding: 11px 13px;
-        border: 1px solid #bac7d8;
-        border-radius: 6px;
-        font: inherit;
-        color: var(--ink);
+        padding: 13px 15px;
+        border: 1px solid #bfd0e1;
+        border-radius: 7px;
         background: #fff;
+        color: var(--ink);
+        font: inherit;
       }
       textarea {
-        min-height: 126px;
+        min-height: 132px;
         resize: vertical;
       }
       input:focus,
       textarea:focus {
-        outline: 3px solid rgba(31, 111, 120, 0.18);
+        outline: 3px solid rgba(46, 183, 232, 0.22);
         border-color: var(--accent);
       }
       .required,
       .optional {
         display: inline-block;
-        margin-left: 6px;
-        font-size: 0.78rem;
-        font-weight: 700;
+        margin-left: 7px;
+        padding: 1px 8px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 800;
       }
-      .required { color: var(--error); }
-      .optional { color: var(--muted); }
+      .required { color: #c22929; background: #fff0f0; }
+      .optional { color: var(--muted); background: #edf3f7; }
       .choice-grid,
       .check-grid {
         display: grid;
@@ -167,18 +269,18 @@
       }
       .choice {
         display: flex;
+        min-height: 50px;
         align-items: flex-start;
         gap: 10px;
-        min-height: 48px;
         padding: 12px;
         border: 1px solid var(--line);
-        border-radius: 6px;
+        border-radius: 7px;
         background: #fff;
-        font-weight: 600;
+        font-weight: 700;
       }
       .choice input {
         flex: 0 0 auto;
-        margin-top: 5px;
+        margin-top: 6px;
       }
       .scale-list {
         display: grid;
@@ -188,7 +290,7 @@
       .scale-row {
         padding: 16px;
         border: 1px solid var(--line);
-        border-radius: 8px;
+        border-radius: 10px;
         background: #fbfdff;
       }
       .scale {
@@ -198,28 +300,29 @@
         margin-top: 10px;
       }
       .submit-area {
-        padding: 30px 32px 36px;
+        padding: 32px 36px 40px;
+        border-top: 1px solid var(--line);
         background: #fbfdff;
       }
       button[type="submit"],
       .button {
         display: inline-flex;
+        min-height: 58px;
         align-items: center;
         justify-content: center;
-        min-height: 54px;
-        padding: 0 24px;
+        padding: 0 26px;
         border: 0;
-        border-radius: 6px;
+        border-radius: 7px;
         color: #fff;
-        background: var(--accent);
+        background: #1d7c87;
         font: inherit;
-        font-weight: 800;
+        font-weight: 900;
         cursor: pointer;
         text-decoration: none;
       }
       button[type="submit"]:hover,
       .button:hover {
-        background: var(--accent-dark);
+        background: #14616a;
       }
       button[disabled] {
         cursor: wait;
@@ -227,47 +330,76 @@
       }
       .status {
         display: none;
-        margin-top: 18px;
-        padding: 16px;
-        border-radius: 6px;
+        margin-top: 22px;
+        padding: 22px;
         border: 1px solid var(--line);
+        border-radius: 10px;
         background: #fff;
       }
       .status.is-visible { display: block; }
       .status.error {
-        border-color: rgba(179, 38, 30, 0.45);
+        border-color: rgba(179, 38, 30, 0.4);
         color: var(--error);
       }
       .status.success {
-        border-color: rgba(20, 108, 67, 0.45);
-        color: var(--ok);
+        border-color: rgba(0, 107, 79, 0.38);
+        color: var(--ink);
       }
-      .config-warning {
-        margin: 0 0 18px;
-        padding: 14px 16px;
-        border: 1px solid rgba(154, 91, 0, 0.35);
-        border-radius: 6px;
-        color: var(--warn);
-        background: #fff8ea;
+      .success-title {
+        margin: 0 0 10px;
+        color: var(--ok);
+        font-size: 1.25rem;
+        font-weight: 900;
+      }
+      .schedule-guide {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(260px, 1.05fr);
+        gap: 18px;
+        align-items: start;
+        margin-top: 18px;
+      }
+      .guide-steps {
+        margin: 0;
+        padding-left: 1.3em;
+      }
+      .guide-steps li + li {
+        margin-top: 8px;
+      }
+      .guide-image {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        box-shadow: 0 12px 30px rgba(15, 56, 95, 0.12);
       }
       .footer {
-        padding: 26px 0;
+        padding: 30px 0;
         color: var(--muted);
         text-align: center;
       }
-      @media (max-width: 760px) {
-        .hero-grid,
-        .choice-grid,
-        .check-grid,
-        .scale {
-          grid-template-columns: 1fr;
+      @media (max-width: 780px) {
+        .wrap {
+          width: auto;
+          margin-left: 16px;
+          margin-right: 16px;
         }
+        .nav-link { display: none; }
+        .brand img { width: 108px; }
         .hero {
-          padding-top: 34px;
+          padding-top: 44px;
+          overflow: hidden;
         }
         h1 {
-          font-size: 1.85rem;
-          line-height: 1.25;
+          font-size: 2rem;
+          line-height: 1.32;
+        }
+        .choice-grid,
+        .check-grid,
+        .scale,
+        .schedule-guide {
+          grid-template-columns: 1fr;
+        }
+        .choice {
+          min-width: 0;
         }
         .sheet-head,
         .form-section,
@@ -282,56 +414,62 @@
     <header>
       <div class="wrap nav">
         <div class="brand">
-          <img src="logo_image_20251203.png" alt="LINK & SYNC">
+          <img src="logo_image_20251203.png" alt="LINK & SYNC LLC">
           <span>LINK & SYNC</span>
         </div>
+        <a class="nav-link" href="#sheet">発見シートを記入する</a>
       </div>
     </header>
 
     <section class="hero">
-      <div class="wrap hero-grid">
-        <div>
-          <h1>「もったいない」を見つける<br>相談シート</h1>
-          <p class="lead">毎日の仕事の中で、時間・確認・手戻りが増えているところを整理します。入力後、相談日時の調整へ進めます。</p>
+      <div class="wrap">
+        <p class="eyebrow">NO MORE もったいない</p>
+        <h1>御社の「<span class="mark">もったいない</span>」を、<br>3分で言葉にしてみませんか。</h1>
+        <p class="lead">面倒な手作業、属人化、繰り返しの入力、探しもの。大きなシステムを入れる前に、まずは日々の「詰まり」を一緒に見える化します。うまく説明できなくても大丈夫。思い当たるものを選ぶだけで進みます。</p>
+        <div class="steps">
+          <div class="step"><span class="num">1</span><span>時間を取られている業務を、選ぶだけで整理します。</span></div>
+          <div class="step"><span class="num">2</span><span>その時間が空いたら、何に使いたいかを言葉にします。</span></div>
+          <div class="step"><span class="num">3</span><span>記入後、初回相談（無料・オンライン）の日程調整へ進めます。</span></div>
         </div>
-        <div class="hero-note">
-          <strong>よくある「もったいない」</strong>
-          <ul>
-            <li>同じ情報を何度も入力している</li>
-            <li>最新版の資料や見積を探す時間が多い</li>
-            <li>社長や特定の人に確認が集中している</li>
-            <li>請求・入金・申込の抜け漏れが不安</li>
-          </ul>
+        <div class="badges">
+          <span class="badge">所要時間 約3分</span>
+          <span class="badge">ムリな勧誘はしません</span>
+          <span class="badge">壁打ち感覚でどうぞ</span>
         </div>
       </div>
     </section>
 
     <main>
       <div class="wrap">
-        <section class="sheet" aria-labelledby="sheet-title">
+        <section class="sheet" id="sheet" aria-labelledby="sheet-title">
           <div class="sheet-head">
-            <h2 id="sheet-title">入力フォーム</h2>
-            <p>分かる範囲で大丈夫です。内容をもとに、初回相談で優先順位を一緒に整理します。</p>
+            <p class="sheet-kicker">DISCOVERY SHEET</p>
+            <h2 id="sheet-title">「もったいない」発見シート</h2>
+            <p>必須は最小限。任意の項目は飛ばしてOKです。</p>
+            <div class="bar" aria-hidden="true"></div>
           </div>
 
           <form id="mottainai-form" novalidate>
             <section class="form-section">
-              <h3>会社・ご連絡先</h3>
+              <div class="section-title"><span class="num">1</span><h3>企業情報</h3></div>
+              <p class="help">ご相談の準備のため、基本情報をうかがいます。</p>
+              <div class="field">
+                <label for="email">メールアドレス <span class="required">必須</span></label>
+                <input id="email" data-field="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+                <p class="help">回答のコピーと、日程調整のご案内をお送りします。</p>
+              </div>
               <div class="field">
                 <label for="company">会社名 <span class="required">必須</span></label>
-                <input id="company" data-field="company" type="text" autocomplete="organization" required>
+                <input id="company" data-field="company" type="text" autocomplete="organization" placeholder="株式会社リンクアンドシンク" required>
+                <p class="help">個人事業主の方は屋号または代表者氏名をご記入ください。</p>
               </div>
               <div class="field">
                 <label for="name">お名前 <span class="required">必須</span></label>
-                <input id="name" data-field="name" type="text" autocomplete="name" required>
-              </div>
-              <div class="field">
-                <label for="email">メールアドレス <span class="required">必須</span></label>
-                <input id="email" data-field="email" type="email" autocomplete="email" required>
+                <input id="name" data-field="name" type="text" autocomplete="name" placeholder="山田 太郎" required>
               </div>
               <div class="field">
                 <label for="address">会社住所 <span class="optional">任意</span></label>
-                <input id="address" data-field="address" type="text" autocomplete="street-address">
+                <input id="address" data-field="address" type="text" autocomplete="street-address" placeholder="東京都○○区○○ 1-2-3">
               </div>
               <fieldset>
                 <legend>従業員数 <span class="required">必須</span></legend>
@@ -347,8 +485,8 @@
             </section>
 
             <section class="form-section">
-              <h3>本当は時間を使いたいこと</h3>
-              <p class="help">複数選択できます。</p>
+              <div class="section-title"><span class="num">2</span><h3>本当は時間を使いたいこと</h3></div>
+              <p class="help">複数選択できます。今すぐ決まっていなくても大丈夫です。</p>
               <div class="check-grid">
                 <label class="choice"><input type="checkbox" data-field="focusAreas" value="新規営業・新規開拓"><span>新規営業・新規開拓</span></label>
                 <label class="choice"><input type="checkbox" data-field="focusAreas" value="既存顧客フォロー"><span>既存顧客フォロー</span></label>
@@ -360,12 +498,12 @@
             </section>
 
             <section class="form-section">
-              <h3>時間が取られている業務</h3>
+              <div class="section-title"><span class="num">3</span><h3>時間を取られている業務</h3></div>
               <div class="scale-list" id="scale-list"></div>
             </section>
 
             <section class="form-section">
-              <h3>気になること</h3>
+              <div class="section-title"><span class="num">4</span><h3>具体的に気になること</h3></div>
               <div class="check-grid">
                 <label class="choice"><input type="checkbox" data-field="issueSignals" value="同じ内容を何度も入力している"><span>同じ内容を何度も入力している</span></label>
                 <label class="choice"><input type="checkbox" data-field="issueSignals" value="過去の情報を探すことが多い"><span>過去の情報を探すことが多い</span></label>
@@ -375,13 +513,12 @@
                 <label class="choice"><input type="checkbox" data-field="issueSignals" value="今のやり方では案件を増やせない"><span>今のやり方では案件を増やせない</span></label>
               </div>
               <div class="field">
-                <label for="freeText">具体的に気になること <span class="optional">任意</span></label>
+                <label for="freeText">自由記入 <span class="optional">任意</span></label>
                 <textarea id="freeText" data-field="freeText" placeholder="例：見積の最新版が分からなくなる、外出先で事務作業が進まない、請求漏れが不安 など"></textarea>
               </div>
             </section>
 
             <div class="submit-area">
-              <p class="config-warning" id="config-warning" hidden>公開前に `GAS_WEB_APP_URL` をApps Script Web AppのURLへ差し替えてください。</p>
               <button type="submit" id="submit-button">送信して日程調整へ進む</button>
               <div class="status" id="status" aria-live="polite"></div>
             </div>
@@ -430,11 +567,6 @@
       const form = document.getElementById("mottainai-form");
       const status = document.getElementById("status");
       const submitButton = document.getElementById("submit-button");
-      const configWarning = document.getElementById("config-warning");
-
-      if (!GAS_WEB_APP_URL.includes("PASTE_")) {
-        configWarning.style.display = "none";
-      }
 
       function setStatus(type, html) {
         status.className = `status is-visible ${type}`;
@@ -461,10 +593,10 @@
 
       function validatePayload(payload) {
         const errors = [];
-        if (!payload.company) errors.push("会社名を入力してください。");
-        if (!payload.name) errors.push("お名前を入力してください。");
         if (!payload.email) errors.push("メールアドレスを入力してください。");
         if (payload.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) errors.push("メールアドレスの形式を確認してください。");
+        if (!payload.company) errors.push("会社名を入力してください。");
+        if (!payload.name) errors.push("お名前を入力してください。");
         if (!payload.employeeCount) errors.push("従業員数を選択してください。");
         return errors;
       }
@@ -483,18 +615,33 @@
           issueSignals: getChecked("issueSignals"),
           freeText: getSingle("freeText"),
           monitoring: false,
+          userAgent: navigator.userAgent,
         };
+      }
+
+      function successHtml() {
+        return `
+          <p class="success-title">送信が完了しました。</p>
+          <p>次は、下のボタンから日程調整ページを開いてください。表示された候補日時の中から、ご都合のよい時間を1つ選ぶと相談予約ができます。</p>
+          <div class="schedule-guide">
+            <div>
+              <ol class="guide-steps">
+                <li>「相談日時を調整する」ボタンを押します。</li>
+                <li>開いた画面で、左側またはカレンダー上の候補時間を選びます。</li>
+                <li>名前などを確認して確定すると、日程調整が完了します。</li>
+              </ol>
+              <p>同じ案内URLは、入力いただいたメールアドレスにもお送りします。</p>
+              <a class="button" href="${SPIR_URL}" target="_blank" rel="noopener">相談日時を調整する</a>
+            </div>
+            <img class="guide-image" src="spir-schedule-guide.png" alt="Spirの日程調整画面例。左側に候補時間、右側にカレンダーが表示されます。">
+          </div>
+        `;
       }
 
       form.addEventListener("submit", async event => {
         event.preventDefault();
         const payload = buildPayload();
         const errors = validatePayload(payload);
-
-        if (GAS_WEB_APP_URL.includes("PASTE_")) {
-          setStatus("error", "公開前設定が未完了です。GAS_WEB_APP_URLをApps Script Web AppのURLへ差し替えてください。");
-          return;
-        }
 
         if (errors.length) {
           setStatus("error", errors.join("<br>"));
@@ -517,7 +664,7 @@
           if (!response.ok || !result.ok) {
             throw new Error(result.error || "送信に失敗しました。");
           }
-          setStatus("success", `送信が完了しました。<br><a class="button" href="${SPIR_URL}" target="_blank" rel="noopener">相談日時を調整する</a>`);
+          setStatus("success", successHtml());
           form.reset();
         } catch (error) {
           setStatus("error", `送信できませんでした。時間をおいて再度お試しください。<br>${error.message}`);
