@@ -284,20 +284,68 @@
       }
       .scale-list {
         display: grid;
-        gap: 14px;
+        gap: 10px;
         margin-top: 18px;
       }
-      .scale-row {
-        padding: 16px;
+      .workload-matrix {
+        gap: 8px;
+      }
+      .workload-row {
+        display: grid;
+        grid-template-columns: minmax(150px, 1fr) minmax(0, 2.6fr);
+        gap: 12px;
+        align-items: center;
+        padding: 12px 14px;
         border: 1px solid var(--line);
         border-radius: 10px;
         background: #fbfdff;
       }
-      .scale {
+      .workload-row:hover {
+        border-color: #b8d2e7;
+        background: #f7fbfe;
+      }
+      .scale-title {
+        line-height: 1.5;
+      }
+      .scale-options {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 8px;
-        margin-top: 10px;
+        gap: 6px;
+      }
+      .scale-option {
+        position: relative;
+        display: block;
+        min-width: 0;
+      }
+      .scale-option input {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+      }
+      .scale-option span {
+        display: grid;
+        min-height: 42px;
+        place-items: center;
+        padding: 8px 10px;
+        border: 1px solid #c9d9e8;
+        border-radius: 999px;
+        background: #fff;
+        color: var(--navy);
+        font-size: 0.94rem;
+        font-weight: 800;
+        line-height: 1.25;
+        text-align: center;
+        cursor: pointer;
+      }
+      .scale-option input:focus-visible + span {
+        outline: 3px solid rgba(46, 183, 232, 0.22);
+        outline-offset: 2px;
+      }
+      .scale-option:has(input:checked) span {
+        border-color: var(--navy);
+        color: #fff;
+        background: var(--navy);
+        box-shadow: 0 5px 14px rgba(15, 56, 95, 0.18);
       }
       .submit-area {
         padding: 32px 36px 40px;
@@ -394,9 +442,15 @@
         }
         .choice-grid,
         .check-grid,
-        .scale,
         .schedule-guide {
           grid-template-columns: 1fr;
+        }
+        .workload-row {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+        .scale-options {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
         .choice {
           min-width: 0;
@@ -511,7 +565,8 @@
 
             <section class="form-section">
               <div class="section-title"><span class="num">3</span><h3>時間を取られている業務</h3></div>
-              <div class="scale-list" id="scale-list"></div>
+              <p class="help">多いものだけ選んでください。分からない項目は未選択でOKです。</p>
+              <div class="scale-list workload-matrix" id="scale-list"></div>
             </section>
 
             <section class="form-section">
@@ -561,12 +616,12 @@
       const scaleList = document.getElementById("scale-list");
       workloadItems.forEach(([key, label]) => {
         const row = document.createElement("div");
-        row.className = "scale-row";
+        row.className = "workload-row";
         row.innerHTML = `
           <span class="scale-title">${label}</span>
-          <div class="scale">
+          <div class="scale-options">
             ${scaleValues.map(value => `
-              <label class="choice">
+              <label class="scale-option" data-scale-value="${value}">
                 <input type="radio" data-field="workload.${key}" name="workload.${key}" value="${value}">
                 <span>${value}</span>
               </label>
