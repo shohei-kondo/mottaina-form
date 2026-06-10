@@ -1,5 +1,6 @@
 const DEFAULT_SHEET_NAME = 'responses';
 const DEFAULT_SPIR_URL = 'https://app.spirinc.com/t/RP5JoChQjAt3Yl4uq5xz6/as/HEjj6RGZiSaz8ngzB_0Kn/confirm';
+const DEFAULT_SENDER_NAME = 'LINK & SYNC';
 
 const RESPONSE_HEADERS = [
   'receivedAt',
@@ -65,6 +66,17 @@ function handleHealthCheck_(e) {
     sheetName,
     timestamp: new Date().toISOString(),
   }, 200);
+}
+
+function checkMailSenderSetup() {
+  const props = PropertiesService.getScriptProperties();
+  const options = getMailOptions_(props);
+  return {
+    ok: true,
+    senderEmail: options.senderEmail || '',
+    senderName: options.senderName || '',
+    replyTo: options.replyTo || '',
+  };
 }
 
 function parsePayload_(e) {
@@ -154,22 +166,63 @@ function sendNotifications_(payload) {
   const props = PropertiesService.getScriptProperties();
   const ownerEmail = props.getProperty('OWNER_EMAIL');
   const spirUrl = props.getProperty('SPIR_URL') || DEFAULT_SPIR_URL;
+  const mailOptions = getMailOptions_(props);
 
   if (ownerEmail) {
-    MailApp.sendEmail({
+    sendEmail_({
       to: ownerEmail,
       subject: `「もったいない」発見シート: ${payload.company || '会社名未入力'}`,
       body: buildOwnerBody_(payload, spirUrl),
-    });
+      htmlBody: buildOwnerHtmlBody_(payload, spirUrl),
+    }, mailOptions);
   }
 
   if (payload.email && props.getProperty('SEND_USER_COPY') !== 'false') {
-    MailApp.sendEmail({
+    sendEmail_({
       to: payload.email,
       subject: '「もったいない」発見シートを受け付けました',
       body: buildUserBody_(payload, spirUrl),
-    });
+      htmlBody: buildUserHtmlBody_(payload, spirUrl),
+    }, mailOptions);
   }
+}
+
+function getMailOptions_(props) {
+  const senderEmail = String(props.getProperty('SENDER_EMAIL') || '').trim();
+  const senderName = String(props.getProperty('SENDER_NAME') || DEFAULT_SENDER_NAME).trim();
+  const replyTo = String(props.getProperty('REPLY_TO_EMAIL') || senderEmail || '').trim();
+
+  if (!senderEmail) {
+    return { senderName, replyTo };
+  }
+
+  const aliases = GmailApp.getAliases();
+  if (aliases.indexOf(senderEmail) === -1) {
+    throw new Error(`SENDER_EMAIL is not configured as a Gmail sending alias: ${senderEmail}`);
+  }
+
+  return { senderEmail, senderName, replyTo };
+}
+
+function sendEmail_(message, options) {
+  if (options.senderEmail) {
+    GmailApp.sendEmail(message.to, message.subject, message.body, {
+      from: options.senderEmail,
+      name: options.senderName,
+      replyTo: options.replyTo || undefined,
+      htmlBody: message.htmlBody,
+    });
+    return;
+  }
+
+  MailApp.sendEmail({
+    to: message.to,
+    subject: message.subject,
+    body: message.body,
+    name: options.senderName,
+    replyTo: options.replyTo || undefined,
+    htmlBody: message.htmlBody,
+  });
 }
 
 function buildOwnerBody_(payload, spirUrl) {
@@ -202,6 +255,41 @@ function buildUserBody_(payload, spirUrl) {
   ].join('\n');
 }
 
+function buildOwnerHtmlBody_(payload, spirUrl) {
+  return [
+    '<p>新しい回答を受け付けました。</p>',
+    htmlResponseSummary_(payload),
+    '<p>日程調整URL:</p>',
+    htmlScheduleLink_(spirUrl),
+  ].join('');
+}
+
+function buildUserHtmlBody_(payload, spirUrl) {
+  return [
+    `<p>${escapeHtml_(payload.name || '')} 様</p>`,
+    '<p>「もったいない」発見シートへのご回答ありがとうございます。<br>ご入力内容のコピーを下記にお送りします。</p>',
+    '<p>次は、下のボタンから相談日時をご調整ください。<br>開いた画面で候補時間を1つ選び、内容を確認して確定すると予約が完了します。</p>',
+    htmlScheduleLink_(spirUrl),
+    '<hr>',
+    '<p><strong>ご回答内容のコピー</strong></p>',
+    htmlResponseSummary_(payload),
+    '<p>LINK & SYNC</p>',
+  ].join('');
+}
+
+function htmlScheduleLink_(spirUrl) {
+  const url = escapeHtml_(spirUrl);
+  return [
+    '<p>',
+    `<a href="${url}" style="display:inline-block;padding:12px 18px;border-radius:7px;background:#1d7c87;color:#ffffff;text-decoration:none;font-weight:700;">日程調整ページを開く</a>`,
+    '</p>',
+  ].join('');
+}
+
+function htmlResponseSummary_(payload) {
+  return `<pre style="font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;white-space:pre-wrap;line-height:1.7;">${escapeHtml_(buildResponseSummary_(payload))}</pre>`;
+}
+
 function buildResponseSummary_(payload) {
   return [
     `会社名: ${payload.company || ''}`,
@@ -229,6 +317,15 @@ function normalizeList_(value) {
     return value.join(', ');
   }
   return String(value || '');
+}
+
+function escapeHtml_(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function jsonResponse_(body, statusCode) {
