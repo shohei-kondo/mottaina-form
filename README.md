@@ -1,20 +1,40 @@
 # mottaina-form
 
-Standalone public pages for the mottainai discovery sheet.
+LINK & SYNC の「もったいない」発見シート公開ページと、回答をGoogle Sheetsへ保存するGoogle Apps Scriptバックエンドです。
 
-## Pages
+## 本番URL
 
-- `index.html`: embedded Google Form version
-- `index-direct-post.html`: direct Google Form POST comparison version
-- `index-gas-sheets.html`: custom HTML form for the GAS + Google Sheets implementation
-- `Code.gs`: Google Apps Script backend for storing responses in Google Sheets
-- `appsscript.json`: Apps Script manifest for the Web App
-- `README-gas-sheets.md`: setup notes for the GAS + Google Sheets implementation
-- `SETUP-CLASP.md`: clasp setup notes for creating the Apps Script project
-- `.claspignore`: limits Apps Script upload to `Code.gs` and `appsscript.json`
+- Public page: https://shohei-kondo.github.io/mottaina-form/
+- GAS Web App: https://script.google.com/macros/s/AKfycbxX_Rf-attdYUt5kHm-NSuzJqSA3tQXpkeHjuW1fZUTNJME5XfVNm2qC8hfJ0ed7_073w/exec
+- Spir scheduling URL: https://app.spirinc.com/t/RP5JoChQjAt3Yl4uq5xz6/as/HEjj6RGZiSaz8ngzB_0Kn/confirm
 
-## GitHub Pages
+## ファイル構成
 
-- https://shohei-kondo.github.io/mottaina-form/
-- https://shohei-kondo.github.io/mottaina-form/index-direct-post.html
-- https://shohei-kondo.github.io/mottaina-form/index-gas-sheets.html
+| File | Purpose |
+|---|---|
+| `index.html` | GitHub Pagesで公開する本番フォーム |
+| `Code.gs` | Apps Script Web App backend |
+| `appsscript.json` | Apps Script manifest |
+| `.clasp.json` | clasp target script configuration |
+| `.claspignore` | `clasp push` 対象を `Code.gs` と `appsscript.json` に限定 |
+| `logo_image_20251203.png` | public page logo |
+| `spir-schedule-guide.png` | submission success guide image |
+| `GAS-DEPLOYMENT.md` | GAS更新・デプロイ手順 |
+
+## Script Properties
+
+| Property | Required | Value / Meaning |
+|---|---:|---|
+| `SPREADSHEET_ID` | yes | 回答保存先スプレッドシートID |
+| `SHEET_NAME` | no | `responses` |
+| `OWNER_EMAIL` | no | 管理者通知先。空なら管理者通知なし |
+| `SPIR_URL` | no | Spir scheduling URL。未設定時はコード内default |
+| `SEND_USER_COPY` | no | `false` の時だけユーザー控えメールを止める |
+| `SENDER_NAME` | no | `LINK & SYNC` |
+| `REPLY_TO_EMAIL` | no | 返信を受けるメールアドレス |
+
+`SENDER_EMAIL` は使いません。現在のメール送信は `MailApp.sendEmail` で、デプロイ実行ユーザーのアカウントから送信します。
+
+## 更新手順
+
+GASを更新するときは [GAS-DEPLOYMENT.md](GAS-DEPLOYMENT.md) を参照してください。
