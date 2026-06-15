@@ -70,12 +70,12 @@ function handleHealthCheck_(e) {
 
 function checkMailSenderSetup() {
   const props = PropertiesService.getScriptProperties();
-  const options = getMailOptions_(props);
   return {
     ok: true,
-    senderEmail: options.senderEmail || '',
-    senderName: options.senderName || '',
-    replyTo: options.replyTo || '',
+    effectiveUser: Session.getEffectiveUser().getEmail(),
+    senderName: props.getProperty('SENDER_NAME') || DEFAULT_SENDER_NAME,
+    replyTo: props.getProperty('REPLY_TO_EMAIL') || '',
+    ownerEmail: props.getProperty('OWNER_EMAIL') || '',
   };
 }
 
@@ -188,33 +188,12 @@ function sendNotifications_(payload) {
 }
 
 function getMailOptions_(props) {
-  const senderEmail = String(props.getProperty('SENDER_EMAIL') || '').trim();
   const senderName = String(props.getProperty('SENDER_NAME') || DEFAULT_SENDER_NAME).trim();
-  const replyTo = String(props.getProperty('REPLY_TO_EMAIL') || senderEmail || '').trim();
-
-  if (!senderEmail) {
-    return { senderName, replyTo };
-  }
-
-  const aliases = GmailApp.getAliases();
-  if (aliases.indexOf(senderEmail) === -1) {
-    throw new Error(`SENDER_EMAIL is not configured as a Gmail sending alias: ${senderEmail}`);
-  }
-
-  return { senderEmail, senderName, replyTo };
+  const replyTo = String(props.getProperty('REPLY_TO_EMAIL') || '').trim();
+  return { senderName, replyTo };
 }
 
 function sendEmail_(message, options) {
-  if (options.senderEmail) {
-    GmailApp.sendEmail(message.to, message.subject, message.body, {
-      from: options.senderEmail,
-      name: options.senderName,
-      replyTo: options.replyTo || undefined,
-      htmlBody: message.htmlBody,
-    });
-    return;
-  }
-
   MailApp.sendEmail({
     to: message.to,
     subject: message.subject,
